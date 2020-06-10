@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"os"
 )
 
 func handlerFunc(w http.ResponseWriter, r *http.Request) {
@@ -19,5 +21,18 @@ func handlerFunc(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	http.HandleFunc("/", handlerFunc)
-	http.ListenAndServe(":3000", nil)
+	err := http.ListenAndServe(GetPort(), nil)
+	if err != nil {
+		log.Fatal("ListenAndServe:", err)
+	}
+}
+
+// GetPort defines a port for wild environment
+func GetPort() string {
+	var port = os.Getenv("PORT")
+	if port == "" {
+		port = "3000"
+		fmt.Println("INFO: No PORT environment detected", port)
+	}
+	return ":" + port
 }
