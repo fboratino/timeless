@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/gorilla/mux"
 )
 
 func handlerFunc(w http.ResponseWriter, r *http.Request) {
@@ -19,11 +21,27 @@ func handlerFunc(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func home(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	fmt.Fprint(w, "<h1>Welcome to my awesome site!</h1>")
+}
+
+func contact(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	fmt.Fprint(w, "To get in touch, please send an email to <a href=\"mailto:support@fotok.com\">support@fotok.com</a>.")
+}
+
 func main() {
-	mux := &http.ServeMux{}
-	mux.HandleFunc("/", handlerFunc)
-	// http.HandleFunc("/", handlerFunc)
-	err := http.ListenAndServe(GetPort(), mux)
+
+	// Router from the standard library
+	// mux := &http.ServeMux{}
+	// mux.HandleFunc("/", handlerFunc)
+
+	r := mux.NewRouter()
+	r.HandleFunc("/", home)
+	r.HandleFunc("/contact", contact)
+
+	err := http.ListenAndServe(GetPort(), r)
 	if err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}
