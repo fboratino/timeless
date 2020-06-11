@@ -20,8 +20,10 @@ func handlerFunc(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/", handlerFunc)
-	err := http.ListenAndServe(GetPort(), nil)
+	mux := &http.ServeMux{}
+	mux.HandleFunc("/", handlerFunc)
+	// http.HandleFunc("/", handlerFunc)
+	err := http.ListenAndServe(GetPort(), mux)
 	if err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}
