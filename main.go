@@ -26,7 +26,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 
 func contact(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	fmt.Fprint(w, "To get in touch, please send an email to <a href=\"mailto:support@fotok.com\">support@fotok.com</a>.")
+	fmt.Fprint(w, "To get in touch, please send an email to <a href=\"mailto:support@go2timeless.com\">support@fotok.com</a>.")
 }
 
 func faq(w http.ResponseWriter, r *http.Request) {
