@@ -50,6 +50,7 @@ func notFound(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+
 	var err error
 	homeTemplate, err = template.ParseFiles(
 		"views/home.gohtml",
