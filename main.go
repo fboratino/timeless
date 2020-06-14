@@ -2,12 +2,15 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
 
 	"github.com/gorilla/mux"
 )
+
+var homeTemplate *template.Template
 
 // GetPort defines a port for wild environment
 func GetPort() string {
@@ -21,7 +24,9 @@ func GetPort() string {
 
 func home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	fmt.Fprint(w, "<h1>Welcome to my awesome site!</h1>")
+	if err := homeTemplate.Execute(w, nil); err != nil {
+		panic(err)
+	}
 }
 
 func contact(w http.ResponseWriter, r *http.Request) {
@@ -41,10 +46,11 @@ func notFound(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-
-	// Router from the standard library
-	// mux := &http.ServeMux{}
-	// mux.HandleFunc("/", handlerFunc)
+	var err error
+	homeTemplate, err = template.ParseFiles("views/home.gohtml")
+	if err != nil {
+		panic(err)
+	}
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", home)
@@ -52,7 +58,7 @@ func main() {
 	r.HandleFunc("/faq", faq)
 	r.NotFoundHandler = http.HandlerFunc(notFound)
 
-	err := http.ListenAndServe(GetPort(), r)
+	err = http.ListenAndServe(GetPort(), r)
 	if err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}
