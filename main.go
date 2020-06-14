@@ -2,16 +2,16 @@ package main
 
 import (
 	"fmt"
-	"html/template"
 	"log"
 	"net/http"
 	"os"
+	"timeless/views"
 
 	"github.com/gorilla/mux"
 )
 
 var (
-	homeTemplate, contactTemplate *template.Template
+	homeView, contactView *views.View
 )
 
 // GetPort defines a port for wild environment
@@ -26,14 +26,16 @@ func GetPort() string {
 
 func home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	if err := homeTemplate.Execute(w, nil); err != nil {
+	err := homeView.Template.Execute(w, nil)
+	if err != nil {
 		panic(err)
 	}
 }
 
 func contact(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	if err := contactTemplate.Execute(w, nil); err != nil {
+	err := contactView.Template.Execute(w, nil)
+	if err != nil {
 		panic(err)
 	}
 }
@@ -50,23 +52,8 @@ func notFound(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-
-	var err error
-	homeTemplate, err = template.ParseFiles(
-		"views/home.gohtml",
-		"views/layouts/footer.gohtml",
-	)
-	if err != nil {
-		panic(err)
-	}
-
-	contactTemplate, err = template.ParseFiles(
-		"views/contact.gohtml",
-		"views/layouts/footer.gohtml",
-	)
-	if err != nil {
-		panic(err)
-	}
+	homeView = views.NewView("views/home.gohtml")
+	contactView = views.NewView("views/contact.gohtml")
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", home)
@@ -74,7 +61,7 @@ func main() {
 	r.HandleFunc("/faq", faq)
 	r.NotFoundHandler = http.HandlerFunc(notFound)
 
-	err = http.ListenAndServe(GetPort(), r)
+	err := http.ListenAndServe(GetPort(), r)
 	if err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}
