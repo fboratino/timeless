@@ -56,9 +56,9 @@ func main() {
 	contactView = views.NewView("bootstrap", "views/contact.gohtml")
 
 	r := mux.NewRouter()
-	r.HandleFunc("/", home)
-	r.HandleFunc("/contact", contact)
-	r.HandleFunc("/faq", faq)
+	r.HandleFunc("/timeless", home)
+	r.HandleFunc("/timeless/contact", contact)
+	r.HandleFunc("/timeless/faq", faq)
 	r.NotFoundHandler = http.HandlerFunc(notFound)
 
 	err := http.ListenAndServe(GetPort(), r)
