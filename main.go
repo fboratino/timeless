@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	masterView, homeView, contactView *views.View
+	masterView, homeView, contactView, signupView *views.View
 )
 
 // GetPort defines a port for wild environment
@@ -26,10 +26,7 @@ func GetPort() string {
 
 func master(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	err := masterView.Template.ExecuteTemplate(w, masterView.Layout, nil)
-	if err != nil {
-		panic(err)
-	}
+	must(masterView.Render(w, nil))
 }
 
 func home(w http.ResponseWriter, r *http.Request) {
@@ -40,6 +37,11 @@ func home(w http.ResponseWriter, r *http.Request) {
 func contact(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	must(contactView.Render(w, nil))
+}
+
+func signup(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	must(signupView.Render(w, nil))
 }
 
 func faq(w http.ResponseWriter, r *http.Request) {
@@ -57,11 +59,13 @@ func main() {
 	masterView = views.NewView("masterBootstrap", "views/master.gohtml")
 	homeView = views.NewView("bootstrap", "views/home.gohtml")
 	contactView = views.NewView("bootstrap", "views/contact.gohtml")
+	signupView = views.NewView("bootstrap", "views/signup.gohtml")
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", master)
 	r.HandleFunc("/timeless", home)
 	r.HandleFunc("/timeless/contact", contact)
+	r.HandleFunc("/timeless/signup", signup)
 	r.HandleFunc("/timeless/faq", faq)
 	r.NotFoundHandler = http.HandlerFunc(notFound)
 
